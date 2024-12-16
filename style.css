@@ -63,7 +63,8 @@ body {
     border: solid 2px var(--clr-baby-powder);
     border-radius: 20px;
     margin-bottom: 15px;
-    padding: 5px 20px;
+    padding: 5px 50px;
+    width: 200px;
 }
 
 .nav-item:hover {
@@ -75,6 +76,15 @@ body {
     background-color: var(--clr-imperial-red);
     border: solid 2px var(--clr-imperial-red);
     font-weight: var(--fw-semibold);
+}
+
+.text-active {
+    color: var(--clr-imperial-red);
+}
+
+.text-soldout {
+    color: grey;
+    font-weight: var(--fw-light);
 }
 
 #content-section {
@@ -98,18 +108,18 @@ body {
 }
 
 .movie-title {
-    font-size: 3rem;
+    font-size: 2rem;
     margin-bottom: 50px;
 }
 
 .movie-description {
-    font-size: 1.5rem;
+    font-size: 1rem;
     margin-bottom: 50px;
 }
 
 .runtime {
     font-weight: var(--fw-light);
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .runtime span {
@@ -118,7 +128,7 @@ body {
 
 .showtime {
     font-weight: var(--fw-light);
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .showtime span {
@@ -127,7 +137,7 @@ body {
 
 .available-tickets {
     font-weight: var(--fw-light);
-    font-size: 1.5rem;
+    font-size: 1rem;
     margin-bottom: 50px;
 }
 
@@ -152,16 +162,25 @@ body {
     background-color: transparent;
 }
 
+.soldout {
+    background-color: var(--clr-onyx);
+}
+
+.soldout:hover {
+    cursor: default;
+    background-color: var(--clr-onyx);
+}
+
 #films {
     margin-top: 0px;
     margin-bottom: 0px;
-    padding-left: 30px;
+    width: 200px;
 }
 
 #films li {
     font-size: 0.8rem;
     text-align: left;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 #films li:hover {

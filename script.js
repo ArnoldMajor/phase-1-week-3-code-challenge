@@ -11,12 +11,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const availableTickets = document.createElement('p');
     const bookButton = document.createElement('button');
     const navButtons = document.querySelectorAll('.nav-item');
-    const homeButton = document.getElementById('nav-home');
     const filmsButton = document.getElementById('nav-films');
-    const soldoutButton = document.getElementById('nav-soldout');
     const filmsList = document.getElementById('films');
 
-    const fetchOneMovie = (id) => {
+    fetchOneMovie(1);
+    let listLoaded = true;
+    fetchMovieTitles();
+
+
+
+    filmsButton.addEventListener('click', () => {
+        filmsButton.classList.toggle('active');
+        if (listLoaded) {
+            const filmItem = document.querySelectorAll('.movie-list');
+            for (const item of filmItem) {
+                item.remove()
+                filmsList.style.marginTop = '0px';
+                filmsList.style.marginBottom = '0px';
+            }
+            listLoaded = false;
+            return
+        } fetchMovieTitles();
+    })
+
+
+    function fetchMovieTitles() {
+        fetch('http://localhost:3000/films')
+            .then(res => res.json())
+            .then(data => {
+                for (const item of data) {
+                    const filmItem = document.createElement('li');
+                    filmsList.appendChild(filmItem);
+                    filmItem.innerText = item.title;
+                    filmItem.className = 'movie-list';
+                    filmsList.style.marginTop = '50px';
+                    filmsList.style.marginBottom = '50px';
+                }
+                listLoaded = true;
+                linkFilmList()
+            })
+    }
+
+    function fetchOneMovie(id) {
         fetch(`http://localhost:3000/films/${id}`)
             .then(res => res.json())
             .then(data => {
@@ -58,10 +94,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 bookButton.innerText = 'Book Movie';
 
 
+                if (ticketDiff < 1) {
+                    bookButton.innerText = 'Sold Out'
+                    bookButton.classList.add('soldout')
+                    bookButton.disabled = true;
+                }
+
                 bookButton.addEventListener('click', () => {
-                    data.tickets_sold++;
-                    ticketDiff = data.capacity - data.tickets_sold;
-                    availableTickets.innerHTML = `<span>Available Tickets: </span>${ticketDiff}`
+                    if (ticketDiff >= 1) {
+                        data.tickets_sold++;
+                        ticketDiff = data.capacity - data.tickets_sold;
+                        if (ticketDiff < 1) {
+                            bookButton.innerText = 'Sold Out'
+                            bookButton.classList.add('soldout')
+                            bookButton.disabled = true;
+                        }
+                        availableTickets.innerHTML = `<span>Available Tickets: </span>${ticketDiff}`
+                    }
                     fetch(`http://localhost:3000/films/${id}`, {
                         method: 'PATCH',
                         headers: {
@@ -74,47 +123,21 @@ document.addEventListener('DOMContentLoaded', () => {
             })
     }
 
-    fetchOneMovie(1);
-    let listLoaded = false;
 
-    for (const button of navButtons) {
-        button.addEventListener('click', () => {
-            for (const button of navButtons) {
-                button.classList.remove('active')
-            }
-            button.classList.add('active')
-        })
-    }
-
-
-    filmsButton.addEventListener('click', () => {
-        bodyContainer.remove()
-        if (listLoaded) {
-            const filmItem = document.querySelectorAll('.movie-list');
-            for (const item of filmItem) {
-                item.remove()
-                filmsList.style.marginTop = '0px';
-                filmsList.style.marginBottom = '0px';
-            }
-            listLoaded = false;
-            return
-        };
-
-        fetch('http://localhost:3000/films')
-            .then(res => res.json())
-            .then(data => {
-                for (const item of data) {
-                    const filmItem = document.createElement('li');
-                    filmsList.appendChild(filmItem);
-                    filmItem.innerText = item.title;
-                    filmItem.className = 'movie-list';
-                    filmsList.style.marginTop = '50px';
-                    filmsList.style.marginBottom = '50px';
+    function linkFilmList() {
+        let arr = [];
+        filmsList.children[0].classList.add('text-active')
+        for (const item of filmsList.children) {
+            arr.push(item.textContent)
+            item.addEventListener('click', () => {
+                fetchOneMovie(arr.indexOf((item.textContent)) + 1)
+                for (const item of filmsList.children) {
+                    item.classList.remove('text-active')
                 }
-                listLoaded = true;
+                item.classList.add('text-active')
+
             })
-
-    })
-
+        }
+    }
 })
 
